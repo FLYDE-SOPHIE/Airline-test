@@ -1,149 +1,200 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('startBtn').addEventListener('click', startTest);
-});
-
-function startTest() {
-    document.getElementById('startContainer').style.display = 'none';
-    currentQuestion = 0;
-    displayQuestion();
-}
-
-function displayQuestion() {
-    const questionContainer = document.getElementById('questionContainer');
-    if (currentQuestion < questions.length) {
-        const q = questions[currentQuestion];
-        let html = `<h3>${currentQuestion + 1}. ${q.question}</h3>`;
-        if (q.type === "number") {
-            html += `<input type="number" id="answer" class="form-control mb-2">`;
-            html += `<button onclick="selectAnswer()" class="btn btn-primary">다음</button>`;
-        } else if (q.multiple) {
-            q.choices.forEach((choice, index) => {
-                html += `<div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="${index}" id="choice${index}">
-                    <label class="form-check-label" for="choice${index}">${choice}</label>
-                </div>`;
-            });
-            html += `<button onclick="selectMultipleAnswers(${q.maxSelect || 0})" class="btn btn-primary mt-2">다음</button>`;
-        } else {
-            q.choices.forEach((choice, index) => {
-                html += `<button onclick="selectAnswer(${index})" class="btn btn-outline-primary m-2">${choice}</button>`;
-            });
-        }
-        questionContainer.innerHTML = html;
-        questionContainer.style.display = 'block';
-    } else {
-        showResult();
-    }
-}const airlineProfiles = {
+const airlineProfiles = {
     "에미레이트 항공": {
         size: "대형",
-        culture: "혁신적",
+        culture: "자유롭지만 보수적",
         workIntensity: "고강도",
         routes: "장거리",
         region: "중동",
         brand: "고급",
         baseCity: "해외",
-        type: "FSC"
+        type: "FSC",
+        destinations: 137,
+        baseSalary: 1266,
+        flightAllowance: 17,
+        averageFlightHours: 90,
+        benefits: ["무료 숙소", "무료 셔틀", "유니폼 세탁", "의료 보험", "세금 면제", "30일 유급 휴가"],
+        discountTickets: ["ID90", "ID50"],
+        requirements: {
+            age: 30,
+            height: 165
+        },
+        uniform: "독보적인 빨간 모자 & 베일",
+        aircraft: ["A380"]
     },
     "카타르 항공": {
         size: "대형",
-        culture: "혁신적",
+        culture: "매우 보수적",
         workIntensity: "고강도",
         routes: "장거리",
         region: "중동",
         brand: "고급",
         baseCity: "해외",
-        type: "FSC"
+        type: "FSC",
+        destinations: 160,
+        baseSalary: 1500,
+        flightAllowance: 11,
+        averageFlightHours: 90,
+        benefits: ["무료 숙소", "무료 셔틀", "유니폼 세탁", "의료 보험", "세금 면제", "30일 유급 휴가"],
+        discountTickets: ["ID90", "ID50"],
+        uniform: "단정한 버건디 색",
+        aircraft: ["A380", "A350", "B787"]
     },
     "에티하드 항공": {
         size: "대형",
-        culture: "혁신적",
+        culture: "자유롭지만 그루밍에 엄격",
         workIntensity: "고강도",
         routes: "장거리",
         region: "중동",
         brand: "고급",
         baseCity: "해외",
-        type: "FSC"
-    },
-    "캐세이퍼시픽": {
-        size: "대형",
-        culture: "전통적",
-        workIntensity: "고강도",
-        routes: "장거리",
-        region: "아시아",
-        brand: "고급",
-        baseCity: "해외",
-        type: "FSC"
+        type: "FSC",
+        destinations: 80,
+        baseSalary: 1400,
+        flightAllowance: 11,
+        averageFlightHours: 90,
+        benefits: ["무료 숙소", "무료 셔틀", "유니폼 세탁", "의료 보험", "세금 면제", "30일 유급 휴가"],
+        discountTickets: ["ID90", "ID50"],
+        requirements: {
+            age: 30,
+            height: 165
+        },
+        uniform: "우아하고 고급스러운",
+        aircraft: ["A380", "A350", "B787"]
     },
     "싱가포르 항공": {
         size: "대형",
-        culture: "전통적",
+        culture: "매우 엄격",
         workIntensity: "고강도",
         routes: "장거리",
         region: "아시아",
         brand: "고급",
         baseCity: "해외",
-        type: "FSC"
+        type: "FSC",
+        destinations: 120,
+        baseSalary: 1400,
+        flightAllowance: 9,
+        averageFlightHours: 100,
+        benefits: ["주택 보조금", "높은 상여금", "퇴직금 600%"],
+        discountTickets: ["75% 할인"],
+        requirements: {
+            education: "4년제 대학 졸업"
+        },
+        uniform: "싱가포르 전통 문양의 아름다운 유니폼",
+        aircraft: ["A380", "A350", "B787"]
+    },
+    "캐세이퍼시픽": {
+        size: "대형",
+        culture: "자유롭고 수평적",
+        workIntensity: "고강도",
+        routes: "장거리",
+        region: "아시아",
+        brand: "고급",
+        baseCity: "해외",
+        type: "FSC",
+        destinations: 200,
+        baseSalary: 1600,
+        flightAllowance: 10.5,
+        averageFlightHours: 100,
+        benefits: ["2년 주택 보조금"],
+        discountTickets: ["ID90", "ID50"],
+        requirements: {
+            education: "4년제 대학 졸업"
+        },
+        uniform: "빨간 색의 세련된 디자인",
+        aircraft: ["A350"]
+    },
+    "ANA": {
+        size: "대형",
+        culture: "한국인 승무원에게 강요하는 문화 없음",
+        workIntensity: "중강도",
+        routes: "장단거리혼합",
+        region: "아시아",
+        brand: "고급",
+        baseCity: "아시아",
+        type: "FSC",
+        destinations: 130,
+        baseSalary: 2300,
+        flightAllowance: 9,
+        averageFlightHours: 80,
+        benefits: [],
+        discountTickets: ["연간 본인 및 가족 할인"],
+        requirements: {
+            education: "4년제 대학 졸업"
+        },
+        uniform: "청순하고 단정한 느낌",
+        aircraft: ["A350", "B787"]
+    },
+    "핀에어": {
+        size: "중형",
+        culture: "매우 자유롭고 수평적",
+        workIntensity: "중강도",
+        routes: "장거리",
+        region: "유럽",
+        brand: "현대적",
+        baseCity: "해외",
+        type: "FSC",
+        destinations: 1,
+        baseSalary: 2300,
+        flightAllowance: 11,
+        averageFlightHours: 110,
+        benefits: ["무료 유니폼 세탁", "현지 체류 호텔", "휴가비 제공"],
+        discountTickets: ["본인 및 직계 가족 할인"],
+        uniform: "진한 네이비 단정함",
+        aircraft: ["A350"]
     },
     "KLM": {
         size: "대형",
-        culture: "전통적",
+        culture: "매우 자유롭고 수평적",
         workIntensity: "중강도",
         routes: "장거리",
         region: "유럽",
         brand: "전통",
         baseCity: "해외",
-        type: "FSC"
-    },
-    "핀에어": {
-        size: "중형",
-        culture: "전통적",
-        workIntensity: "중강도",
-        routes: "장단거리혼합",
-        region: "유럽",
-        brand: "현대적",
-        baseCity: "해외",
-        type: "FSC"
+        type: "FSC",
+        destinations: 1,
+        baseSalary: 3000,
+        averageFlightHours: 70,
+        benefits: ["무료 유니폼 세탁", "현지 체류 호텔", "5일 휴식", "2달 유급 휴가", "퇴직금", "실업 급여"],
+        discountTickets: ["연간 4장", "네덜란드 주변국 무제한"],
+        uniform: "자유로운 느낌 파란색",
+        aircraft: ["A350", "B787"]
     },
     "에어아시아": {
         size: "중형",
-        culture: "혁신적",
+        culture: "매우 자유롭고 수평적",
         workIntensity: "중강도",
         routes: "단거리",
         region: "아시아",
         brand: "저가",
         baseCity: "아시아",
-        type: "LCC"
+        type: "LCC",
+        destinations: 120,
+        baseSalary: 2000,
+        averageFlightHours: 75,
+        benefits: ["무료 단거리 비행 티켓 16장", "ID90 무제한 할인 티켓"],
+        discountTickets: ["본인 및 가족 할인"],
+        uniform: "발랄하고 섹시한 빨간색. 타이트함",
+        aircraft: []
     },
-    "스쿠트항공": {
+    "스쿠트": {
         size: "중형",
-        culture: "혁신적",
+        culture: "자유롭지만 시니어리티 있음",
         workIntensity: "중강도",
         routes: "장단거리혼합",
         region: "아시아",
         brand: "저가",
         baseCity: "아시아",
-        type: "LCC"
-    },
-    "에어아라비아": {
-        size: "중형",
-        culture: "혁신적",
-        workIntensity: "중강도",
-        routes: "단거리",
-        region: "중동",
-        brand: "저가",
-        baseCity: "해외",
-        type: "LCC"
-    },
-    "ANA 항공": {
-        size: "대형",
-        culture: "전통적",
-        workIntensity: "고강도",
-        routes: "장단거리혼합",
-        region: "아시아",
-        brand: "고급",
-        baseCity: "아시아",
-        type: "FSC"
+        type: "LCC",
+        destinations: 60,
+        baseSalary: 1270,
+        averageFlightHours: 95,
+        benefits: ["유급 휴가 20일", "병가 14일", "복지 포인트 900 SGD", "보너스 600%"],
+        discountTickets: ["본인 외 5명까지 할인"],
+        requirements: {
+            education: "4년제 대학 졸업"
+        },
+        uniform: "자유로운 노랑색과 검정의 조화. 편한 느낌",
+        aircraft: ["B787"]
     }
 };
 
@@ -188,7 +239,7 @@ const questions = [
     },
     {
         question: "선호하는 항공사 규모는 어떠한가요?",
-        choices: ["대형 항공사 (50개 이상의 도시에 취항)", "중소형 항공사 (50개 이하의 도시에 취항)"]
+        choices: ["대형 항공사", "중소형 항공사"]
     },
     {
         question: "어떤 회사 분위기를 더 선호하시나요?",
@@ -321,10 +372,13 @@ const questions = [
 let currentQuestion = 0;
 const answers = [];
 
-document.getElementById('startBtn').addEventListener('click', startTest);
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('startBtn').addEventListener('click', startTest);
+});
 
 function startTest() {
     document.getElementById('startContainer').style.display = 'none';
+    currentQuestion = 0;
     displayQuestion();
 }
 
@@ -332,7 +386,7 @@ function displayQuestion() {
     const questionContainer = document.getElementById('questionContainer');
     if (currentQuestion < questions.length) {
         const q = questions[currentQuestion];
-        let html = `<h3>${q.question}</h3>`;
+        let html = `<h3>${currentQuestion + 1}. ${q.question}</h3>`;
         if (q.type === "number") {
             html += `<input type="number" id="answer" class="form-control mb-2">`;
             html += `<button onclick="selectAnswer()" class="btn btn-primary">다음</button>`;
@@ -383,21 +437,31 @@ function calculateScores(answers) {
         scores[airline] = 0;
     }
 
-    // 1. 개인 정보 및 기본 자격
     // 나이
     const age = answers[0];
     for (let airline in airlineProfiles) {
-        if ((age <= 1 && airlineProfiles[airline].culture === "혁신적") ||
-            (age >= 2 && airlineProfiles[airline].culture === "전통적")) {
-            scores[airline] += 1;
+        if (airlineProfiles[airline].requirements && airlineProfiles[airline].requirements.age) {
+            if (age <= airlineProfiles[airline].requirements.age) {
+                scores[airline] += 2;
+            }
         }
     }
 
     // 학력
     if (answers[1] === 1) { // 4년제 대학 졸업
         for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].type === "FSC") {
-                scores[airline] += 1;
+            if (airlineProfiles[airline].requirements && airlineProfiles[airline].requirements.education === "4년제 대학 졸업") {
+                scores[airline] += 2;
+            }
+        }
+    }
+
+    // 키
+    const height = parseInt(answers[2]);
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].requirements && airlineProfiles[airline].requirements.height) {
+            if (height >= airlineProfiles[airline].requirements.height) {
+                scores[airline] += 2;
             }
         }
     }
@@ -406,6 +470,8 @@ function calculateScores(answers) {
     const englishLevel = answers[4];
     for (let airline in airlineProfiles) {
         if (englishLevel <= 1 && airlineProfiles[airline].region !== "아시아") {
+            scores[airline] += 3;
+        } else if (englishLevel <= 2 && airlineProfiles[airline].region === "아시아") {
             scores[airline] += 2;
         }
     }
@@ -413,7 +479,7 @@ function calculateScores(answers) {
     // 추가 언어
     const additionalLanguages = answers[5];
     for (let airline in airlineProfiles) {
-        if (additionalLanguages.length > 0 && airlineProfiles[airline].routes === "장거리") {
+        if (additionalLanguages.length > 0) {
             scores[airline] += additionalLanguages.length;
         }
     }
@@ -426,7 +492,6 @@ function calculateScores(answers) {
         }
     }
 
-    // 2. 선호 근무 환경 및 조건
     // 항공사 규모
     if (answers[9] === 0) { // 대형 항공사 선호
         for (let airline in airlineProfiles) {
@@ -445,13 +510,13 @@ function calculateScores(answers) {
     // 회사 분위기
     if (answers[10] === 0) { // 전통적 분위기 선호
         for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].culture === "전통적") {
+            if (airlineProfiles[airline].culture.includes("보수적") || airlineProfiles[airline].culture.includes("전통적")) {
                 scores[airline] += 2;
             }
         }
     } else { // 혁신적 분위기 선호
         for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].culture === "혁신적") {
+            if (airlineProfiles[airline].culture.includes("자유") || airlineProfiles[airline].culture.includes("혁신적")) {
                 scores[airline] += 2;
             }
         }
@@ -472,7 +537,6 @@ function calculateScores(answers) {
         }
     }
 
-    // 3. 운항 노선 및 근무 스케줄 선호도
     // 운항 노선
     if (answers[16] === 0) { // 장거리 노선 선호
         for (let airline in airlineProfiles) {
@@ -487,7 +551,6 @@ function calculateScores(answers) {
             }
         }
     }
-
     // 지역 선호도
     const regionPreference = answers[17];
     for (let airline in airlineProfiles) {
@@ -498,7 +561,6 @@ function calculateScores(answers) {
         }
     }
 
-    // 4. 항공사 문화 및 가치관 적합성
     // 고객 서비스 접근 방식
     if (answers[24] === 0) { // 정중하고 격식 있는 서비스 선호
         for (let airline in airlineProfiles) {
@@ -529,23 +591,21 @@ function calculateScores(answers) {
         }
     }
 
-    // 5. 개인의 가치관 및 적응력
     // 새로운 환경 적응
     if (answers[29] === 0) { // 새로운 환경 선호
         for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].culture === "혁신적") {
+            if (airlineProfiles[airline].culture.includes("자유") || airlineProfiles[airline].culture.includes("혁신적")) {
                 scores[airline] += 2;
             }
         }
     } else { // 안정적 환경 선호
         for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].culture === "전통적") {
+            if (airlineProfiles[airline].culture.includes("보수적") || airlineProfiles[airline].culture.includes("전통적")) {
                 scores[airline] += 2;
             }
         }
     }
 
-    // 6. 취업 전략 및 선호도
     // 해외 면접 의향
     if (answers[36] === 0) { // 해외 면접 참여 의향 있음
         for (let airline in airlineProfiles) {
@@ -597,8 +657,27 @@ function showResult() {
     result += "<p>당신에게 가장 적합한 항공사는:</p>";
     result += `<h3>1. ${rankedAirlines[0].name}</h3>`;
     result += `<p>${rankedAirlines[0].name}는(은) 당신의 선호도와 가장 잘 맞는 항공사입니다.</p>`;
+    result += `<h4>주요 특징:</h4>`;
+    result += `<ul>
+        <li>규모: ${airlineProfiles[rankedAirlines[0].name].size}</li>
+        <li>문화: ${airlineProfiles[rankedAirlines[0].name].culture}</li>
+        <li>업무 강도: ${airlineProfiles[rankedAirlines[0].name].workIntensity}</li>
+        <li>주요 노선: ${airlineProfiles[rankedAirlines[0].name].routes}</li>
+        <li>지역: ${airlineProfiles[rankedAirlines[0].name].region}</li>
+        <li>기본급: $${airlineProfiles[rankedAirlines[0].name].baseSalary}</li>
+    </ul>`;
+    
     result += `<h3>2. ${rankedAirlines[1].name}</h3>`;
     result += `<p>${rankedAirlines[1].name}도 좋은 선택이 될 수 있습니다.</p>`;
+    result += `<h4>주요 특징:</h4>`;
+    result += `<ul>
+        <li>규모: ${airlineProfiles[rankedAirlines[1].name].size}</li>
+        <li>문화: ${airlineProfiles[rankedAirlines[1].name].culture}</li>
+        <li>업무 강도: ${airlineProfiles[rankedAirlines[1].name].workIntensity}</li>
+        <li>주요 노선: ${airlineProfiles[rankedAirlines[1].name].routes}</li>
+        <li>지역: ${airlineProfiles[rankedAirlines[1].name].region}</li>
+        <li>기본급: $${airlineProfiles[rankedAirlines[1].name].baseSalary}</li>
+    </ul>`;
     
     result += "<h3>전체 순위:</h3>";
     result += "<ol>";
