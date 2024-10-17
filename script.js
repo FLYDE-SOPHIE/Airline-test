@@ -689,28 +689,3 @@ function showResult() {
     resultContainer.innerHTML = result;
     resultContainer.style.display = 'block';
     document.getElementById('questionContainer').style.display = 'none';
-}
-function saveTestResult(userInfo, result) {
-  var url = 'YOUR_GOOGLE_SHEETS_WEB_APP_URL_HERE';  // https://script.google.com/macros/s/AKfycbzdDPX963-GT3UrYRmdFTnfFCoSRSVbVTvMzcCjAx55V-RbJ6wk6wvmoeh5QdeGnO8x/exec
-  url += '?name=' + encodeURIComponent(userInfo.name);
-  url += '&email=' + encodeURIComponent(userInfo.email);
-  url += '&airline=' + encodeURIComponent(result[0].name);
-  
-  fetch(url)
-    .then(response => console.log('저장 성공'))
-    .catch(error => console.error('저장 실패:', error));
-}
-
-// showResult 함수 수정
-function showResult() {
-  // ... (기존 코드는 그대로 유지)
-  
-  // 사용자 정보 입력 받기
-  const userInfo = {
-    name: prompt("이름을 입력해주세요:"),
-    email: prompt("이메일을 입력해주세요:")
-  };
-
-  // 테스트 결과 저장
-  saveTestResult(userInfo, rankedAirlines);
-}
