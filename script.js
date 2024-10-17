@@ -689,41 +689,4 @@ function showResult() {
     resultContainer.innerHTML = result;
     resultContainer.style.display = 'block';
     document.getElementById('questionContainer').style.display = 'none';
-    
-function saveTestResult(userInfo, result, answers) {
-  var url = 'https://script.google.com/macros/s/AKfycbzdDPX963-GT3UrYRmdFTnfFCoSRSVbVTvMzcCjAx55V-RbJ6wk6wvmoeh5QdeGnO8x/exec'
-  url += '?name=' + encodeURIComponent(userInfo.name);
-  url += '&email=' + encodeURIComponent(userInfo.email);
-  url += '&airline=' + encodeURIComponent(result[0].name);
-  
-  // 질문 1-9에 대한 답변 추가
-  for (let i = 0; i < 9; i++) {
-    url += '&q' + (i + 1) + '=' + encodeURIComponent(answers[i]);
-  }
-  
-  fetch(url)
-    .then(response => console.log('저장 성공'))
-    .catch(error => console.error('저장 실패:', error));
-}
-
-// showResult 함수 수정
-function showResult() {
-  // ... (기존 코드는 그대로 유지)
-  
-  const scores = calculateScores(answers);
-  
-  const rankedAirlines = Object.entries(scores)
-    .sort((a, b) => b[1] - a[1])
-    .map(entry => ({ name: entry[0], score: entry[1] }));
-  
-  // ... (결과 표시 코드)
-
-  // 사용자 정보 입력 받기
-  const userInfo = {
-    name: prompt("이름을 입력해주세요:"),
-    email: prompt("이메일을 입력해주세요:")
-  };
-
-  // 테스트 결과 저장 (answers 배열의 처음 9개 항목만 전달)
-  saveTestResult(userInfo, rankedAirlines, answers.slice(0, 9));
 }
