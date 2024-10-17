@@ -1,4 +1,40 @@
-const airlineProfiles = {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('startBtn').addEventListener('click', startTest);
+});
+
+function startTest() {
+    document.getElementById('startContainer').style.display = 'none';
+    currentQuestion = 0;
+    displayQuestion();
+}
+
+function displayQuestion() {
+    const questionContainer = document.getElementById('questionContainer');
+    if (currentQuestion < questions.length) {
+        const q = questions[currentQuestion];
+        let html = `<h3>${currentQuestion + 1}. ${q.question}</h3>`;
+        if (q.type === "number") {
+            html += `<input type="number" id="answer" class="form-control mb-2">`;
+            html += `<button onclick="selectAnswer()" class="btn btn-primary">다음</button>`;
+        } else if (q.multiple) {
+            q.choices.forEach((choice, index) => {
+                html += `<div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="${index}" id="choice${index}">
+                    <label class="form-check-label" for="choice${index}">${choice}</label>
+                </div>`;
+            });
+            html += `<button onclick="selectMultipleAnswers(${q.maxSelect || 0})" class="btn btn-primary mt-2">다음</button>`;
+        } else {
+            q.choices.forEach((choice, index) => {
+                html += `<button onclick="selectAnswer(${index})" class="btn btn-outline-primary m-2">${choice}</button>`;
+            });
+        }
+        questionContainer.innerHTML = html;
+        questionContainer.style.display = 'block';
+    } else {
+        showResult();
+    }
+}const airlineProfiles = {
     "에미레이트 항공": {
         size: "대형",
         culture: "혁신적",
