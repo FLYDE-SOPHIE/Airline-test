@@ -23,7 +23,8 @@
     <script src="script.js"></script>
     <script>
 function sendResultToSheet(answers, result) {
-    const url = 'https://script.google.com/macros/s/AKfycbzb5JSqc-XJLuAnPlNXk7CEYh-HQpJIuoNja_VS3kGmDffa7TjB2qsR34OHNOJgEk1p7w/exec'
+    console.log("Sending data to sheet:", answers, result);
+    const url = 'https://script.google.com/macros/s/AKfycbzb5JSqc-XJLuAnPlNXk7CEYh-HQpJIuoNja_VS3kGmDffa7TjB2qsR34OHNOJgEk1p7w/exec';
     
     // 복수 선택 답변을 문자열로 변환
     const formattedAnswers = answers.map((answer, index) => {
@@ -32,6 +33,8 @@ function sendResultToSheet(answers, result) {
         }
         return answer;
     });
+
+    console.log("Formatted answers:", formattedAnswers);
 
     const data = {
         answers: formattedAnswers,
@@ -46,8 +49,6 @@ function sendResultToSheet(answers, result) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data)
-    });
-}
     }).then(response => {
         console.log('Data sent successfully');
     }).catch(error => {
