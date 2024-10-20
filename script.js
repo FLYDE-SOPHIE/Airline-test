@@ -689,4 +689,6 @@ function showResult() {
     resultContainer.innerHTML = result;
     resultContainer.style.display = 'block';
     document.getElementById('questionContainer').style.display = 'none';
+
+    sendResultToSheet(rankedAirlines[0].name);
 }
