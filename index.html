@@ -22,22 +22,23 @@
     </div>
     <script src="script.js"></script>
     <script>
-    function sendResultToSheet(result) {
-  const url = 'https://script.google.com/macros/s/AKfycbymymDvuqRoYk4GKq8j6dz25PFifcNIR5caTTIEpEr_3o8r_Gs--ITQyG9tL9x62QGWgg/exec'
-  const data = {
-    answers: answers.slice(0, 9),
-    result: result
-  };
+    f<script>
+function sendResultToSheet(answers, result) {
+    const url = 'https://script.google.com/macros/s/AKfycbymymDvuqRoYk4GKq8j6dz25PFifcNIR5caTTIEpEr_3o8r_Gs--ITQyG9tL9x62QGWgg/exec'
+    const data = {
+        answers: answers,
+        result: result
+    };
 
-  fetch(url, {
-    method: 'POST',
-    mode: 'no-cors',
-    cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  });
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
 }
 </script>
 </body>
