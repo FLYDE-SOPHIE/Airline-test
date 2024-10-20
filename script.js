@@ -414,10 +414,11 @@ function selectAnswer(choiceIndex) {
     if (questions[currentQuestion].type === "number") {
         answers.push(document.getElementById('answer').value);
     } else {
-        answers.push(choiceIndex);
+        answers.push(questions[currentQuestion].choices[choiceIndex]);
     }
     currentQuestion++;
     displayQuestion();
+}
 }
 
 function selectMultipleAnswers(maxSelect) {
@@ -690,5 +691,5 @@ function showResult() {
     resultContainer.style.display = 'block';
     document.getElementById('questionContainer').style.display = 'none';
 
-    sendResultToSheet(rankedAirlines[0].name);
+    sendResultToSheet(answers.slice(0, 9), rankedAirlines[0].name);
 }
