@@ -24,8 +24,17 @@
     <script>
 function sendResultToSheet(answers, result) {
     const url = 'https://script.google.com/macros/s/AKfycbzb5JSqc-XJLuAnPlNXk7CEYh-HQpJIuoNja_VS3kGmDffa7TjB2qsR34OHNOJgEk1p7w/exec'
+    
+    // 복수 선택 답변을 문자열로 변환
+    const formattedAnswers = answers.map((answer, index) => {
+        if (index === 5 || index === 8) { // 6번과 9번 질문 (인덱스는 0부터 시작)
+            return Array.isArray(answer) ? answer.map(i => questions[index].choices[i]).join(', ') : answer;
+        }
+        return answer;
+    });
+
     const data = {
-        answers: answers,
+        answers: formattedAnswers,
         result: result
     };
 
@@ -37,6 +46,8 @@ function sendResultToSheet(answers, result) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data)
+    });
+}
     }).then(response => {
         console.log('Data sent successfully');
     }).catch(error => {
