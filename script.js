@@ -1,4 +1,20 @@
-const airlineProfiles = {
+console.log("script.js 파일이 로드되었습니다.");
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOMContentLoaded 이벤트가 발생했습니다.");
+    const startBtn = document.getElementById('startBtn');
+    if(startBtn) {
+        console.log("시작 버튼 요소를 찾았습니다.");
+        startBtn.addEventListener('click', startTest);
+    } else {
+        console.log("시작 버튼 요소를 찾을 수 없습니다.");
+    }
+});
+
+function startTest() {
+    console.log("startTest 함수가 호출되었습니다.");
+
+}const airlineProfiles = {
     "에미레이트 항공": {
         size: "대형",
         culture: "자유롭지만 보수적",
