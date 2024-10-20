@@ -419,7 +419,6 @@ function selectAnswer(choiceIndex) {
     currentQuestion++;
     displayQuestion();
 }
-}
 
 function selectMultipleAnswers(maxSelect) {
     const selectedChoices = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
@@ -468,14 +467,14 @@ function calculateScores(answers) {
     }
 
     // 영어 능력
-    const englishLevel = answers[4];
+    const englishLevelIndex = answers[4];
     for (let airline in airlineProfiles) {
-        if (englishLevel <= 1 && airlineProfiles[airline].region !== "아시아") {
-            scores[airline] += 3;
-        } else if (englishLevel <= 2 && airlineProfiles[airline].region === "아시아") {
-            scores[airline] += 2;
-        }
+    if (englishLevelIndex <= 1 && airlineProfiles[airline].region !== "아시아") {
+        scores[airline] += 3;
+    } else if (englishLevelIndex <= 2 && airlineProfiles[airline].region === "아시아") {
+        scores[airline] += 2;
     }
+}
 
     // 추가 언어
     const additionalLanguages = answers[5];
@@ -486,81 +485,81 @@ function calculateScores(answers) {
     }
 
     // 해외 거주 경험
-    const overseasExperience = answers[6];
+    const overseasExperienceIndex = answers[6];
     for (let airline in airlineProfiles) {
-        if (overseasExperience >= 3 && airlineProfiles[airline].baseCity === "해외") {
+    if (overseasExperienceIndex >= 3 && airlineProfiles[airline].baseCity === "해외") {
+        scores[airline] += 2;
+    }
+}
+
+    // 항공사 규모
+    if (answers[9] === "대형 항공사") {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].size === "대형") {
             scores[airline] += 2;
         }
     }
-
-    // 항공사 규모
-    if (answers[9] === 0) { // 대형 항공사 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].size === "대형") {
-                scores[airline] += 2;
-            }
-        }
-    } else { // 중소형 항공사 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].size === "중형") {
-                scores[airline] += 2;
-            }
+} else {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].size === "중형") {
+            scores[airline] += 2;
         }
     }
+}
 
     // 회사 분위기
-    if (answers[10] === 0) { // 전통적 분위기 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].culture.includes("보수적") || airlineProfiles[airline].culture.includes("전통적")) {
-                scores[airline] += 2;
-            }
-        }
-    } else { // 혁신적 분위기 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].culture.includes("자유") || airlineProfiles[airline].culture.includes("혁신적")) {
-                scores[airline] += 2;
-            }
+    if (answers[10] === "전통적이고 체계적인 분위기") {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].culture.includes("보수적") || airlineProfiles[airline].culture.includes("전통적")) {
+            scores[airline] += 2;
         }
     }
+} else {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].culture.includes("자유") || airlineProfiles[airline].culture.includes("혁신적")) {
+            scores[airline] += 2;
+        }
+    }
+}
 
     // 업무 강도
-    if (answers[11] === 0) { // 고강도 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].workIntensity === "고강도") {
-                scores[airline] += 2;
-            }
-        }
-    } else { // 저강도 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].workIntensity === "중강도") {
-                scores[airline] += 2;
-            }
+    if (answers[11] === "고강도 (많은 비행 시간, 빠른 페이스)") {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].workIntensity === "고강도") {
+            scores[airline] += 2;
         }
     }
+} else {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].workIntensity === "중강도") {
+            scores[airline] += 2;
+        }
+    }
+}
 
     // 운항 노선
-    if (answers[16] === 0) { // 장거리 노선 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].routes === "장거리" || airlineProfiles[airline].routes === "장단거리혼합") {
-                scores[airline] += 2;
-            }
-        }
-    } else { // 단거리 노선 선호
-        for (let airline in airlineProfiles) {
-            if (airlineProfiles[airline].routes === "단거리" || airlineProfiles[airline].routes === "장단거리혼합") {
-                scores[airline] += 2;
-            }
-        }
-    }
-    // 지역 선호도
-    const regionPreference = answers[17];
+    if (answers[16] === "장거리 노선 (6시간 이상의 비행 & 레이오버)") {
     for (let airline in airlineProfiles) {
-        if ((regionPreference === 0 && airlineProfiles[airline].region === "아시아") ||
-            (regionPreference === 1 && (airlineProfiles[airline].region === "유럽" || airlineProfiles[airline].region === "중동")) ||
-            (regionPreference === 2 && airlineProfiles[airline].region === "유럽")) {
-            scores[airline] += 3;
+        if (airlineProfiles[airline].routes === "장거리" || airlineProfiles[airline].routes === "장단거리혼합") {
+            scores[airline] += 2;
         }
     }
+} else {
+    for (let airline in airlineProfiles) {
+        if (airlineProfiles[airline].routes === "단거리" || airlineProfiles[airline].routes === "장단거리혼합") {
+            scores[airline] += 2;
+        }
+    }
+}
+    // 지역 선호도
+   const regionPreference = answers[17];
+for (let airline in airlineProfiles) {
+    if ((regionPreference === "아시아" && airlineProfiles[airline].region === "아시아") ||
+        (regionPreference === "유럽/중동" && (airlineProfiles[airline].region === "유럽" || airlineProfiles[airline].region === "중동")) ||
+        (regionPreference === "미주/대양주" && airlineProfiles[airline].region === "유럽")) {
+        scores[airline] += 3;
+    }
+}
 
     // 고객 서비스 접근 방식
     if (answers[24] === 0) { // 정중하고 격식 있는 서비스 선호
